@@ -1,6 +1,39 @@
 `default_nettype none
 `include "common.h"
 
+// module progmem #(
+//     parameter DATA = 16,
+//     parameter ADDR = 3
+// ) (
+//     input   wire                clk,
+//     input   wire    [ADDR-1:0]  addr,
+//     // input   wire                wr,
+//     // input   wire    [DATA-1:0]  din,
+//     output  reg     [DATA-1:0]  dout
+// );
+//  
+//   reg [DATA-1:0] mem [(2**ADDR)-1:0];
+//   initial begin
+//     $readmemh("compiler/build/nuc.hex", mem);
+//   end
+//  
+//   always @(posedge clk) begin
+//     dout      <= mem[addr];
+//   end
+// endmodule
+
+// module bootrom (
+//     input   wire           clk,
+//     input   wire    [2:0]  addr,
+//     output  reg     [15:0] dout
+// );
+//   always @(posedge clk)
+//     case (addr)
+// `include "compiler/build/nuc.v"
+//     endcase
+// 
+// endmodule
+
 module top(input clk, output D1, output D2, output D3, output D4, output D5,
            output TXD,
            input RXD,
@@ -16,7 +49,7 @@ module top(input clk, output D1, output D2, output D3, output D4, output D5,
   wire [15:0] io_din = 16'd0000;
   wire [15:0] mem_din = 16'd0000;
   wire [12:0] code_addr;
-  reg [15:0] insn;
+  wire [15:0] insn;
 
   always @(posedge clk)
     case (code_addr[2:0])
@@ -24,16 +57,29 @@ module top(input clk, output D1, output D2, output D3, output D4, output D5,
     // 1: insn <= 16'h6203;
     // 2: insn <= 16'h6040;
     // 3: insn <= 16'h0000;
-    0: insn <= 16'h804A;
-    1: insn <= 16'h8001;
-    2: insn <= 16'h6043;
-    3: insn <= 16'h6103;
-    4: insn <= 16'h0000;
-    5: insn <= 16'h608C;
-    6: insn <= 16'h0000;
-    7: insn <= 16'h0000;
+
+    // 0: insn <= 16'h804A;
+    // 1: insn <= 16'h8001;
+    // 2: insn <= 16'h6043;
+    // 3: insn <= 16'h6103;
+    // 4: insn <= 16'h0000;
+    // 5: insn <= 16'h608C;
+    // 6: insn <= 16'h0000;
+    // 7: insn <= 16'h0000;
+
+// 3'd0: insn <= 16'h0001;
+// 3'd1: insn <= 16'h8040;
+// 3'd2: insn <= 16'h8001;
+// 3'd3: insn <= 16'h6043;
+// 3'd4: insn <= 16'h6103;
+// 3'd5: insn <= 16'h0001;
+// 3'd6: insn <= 16'hxxxx;
+// 3'd7: insn <= 16'hxxxx;
+
+`include "compiler/build/nuc.v"
     endcase
 
+  // bootrom pm(.clk(clk), .addr(code_addr[2:0]), .dout(insn));
 
   j1 _j1(
     .clk(clk),

@@ -1,5 +1,9 @@
-: _
+: emit
+     d# 1 io!
+;
+
+: main
     begin
-        [char] J d# 1 io!
+        [char] ! emit
     again
 ;

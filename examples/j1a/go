@@ -1,4 +1,5 @@
 set -e
+( cd compiler ; sh go )
 make clean
 make
 iceprog j1a.bin
