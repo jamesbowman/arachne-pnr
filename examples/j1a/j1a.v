@@ -98,17 +98,23 @@ module top(input clk, output D1, output D2, output D3, output D4, output D5,
     if (io_wr)
        q <= mem_addr[3:0];
 
-  reg  io_wr_;
+  reg  io_wr_, io_rd_;
   reg [15:0] dout_;
-  always @(posedge clk)
-    {io_wr_, dout_} <= {io_wr, dout};
+  reg [0:0] io_addr_;
+
+  always @(posedge clk) begin
+    {io_rd_, io_wr_, dout_} <= {io_rd, io_wr, dout};
+    if (io_rd)
+      io_addr_ <= mem_addr[0];
+  end
 
   assign {D1,D2,D3,D4,D5} = code_addr[4:0];
   assign J3_10 = io_wr;
 
   wire uart0_valid, uart0_busy;
   wire [7:0] uart0_data;
-  wire uart0_rd = 0, uart0_wr = io_wr;
+  wire uart0_wr = io_wr;
+  wire uart0_rd = io_rd_ & (io_addr_ == 1'b1);
   reg [31:0] uart_baud = 32'd9600;
   wire UART0_RX;
   buart #(.CLKFREQ(MHZ * 1000000)) _uart0 (
@@ -124,7 +130,6 @@ module top(input clk, output D1, output D2, output D3, output D4, output D5,
      .tx_data(dout_[7:0]),
      .rx_data(uart0_data));
 
-
-  assign io_din = {15'd0, !uart0_busy};
+  assign io_din = io_addr_ ? (uart0_valid ? {8'h01, uart0_data} : {16'h0000}) : {15'd0, !uart0_busy};
 
 endmodule // top

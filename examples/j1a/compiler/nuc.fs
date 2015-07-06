@@ -7,6 +7,9 @@
 
 : main
     begin
+        \ d# 1 io@ dup if
+        \     emit
+        \ then
         d# 32 emit
         [char] J emit
         [char] 1 emit
