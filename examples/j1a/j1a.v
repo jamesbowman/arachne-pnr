@@ -46,7 +46,7 @@ module top(input clk, output D1, output D2, output D3, output D4, output D5,
   wire [15:0] mem_addr;
   wire mem_wr;
   wire [15:0] dout;
-  wire [15:0] io_din = 16'd0000;
+  wire [15:0] io_din;
   wire [15:0] mem_din = 16'd0000;
   wire [12:0] code_addr;
   wire [15:0] insn;
@@ -123,4 +123,8 @@ module top(input clk, output D1, output D2, output D3, output D4, output D5,
      .busy(uart0_busy),
      .tx_data(dout_[7:0]),
      .rx_data(uart0_data));
+
+
+  assign io_din = {15'd0, !uart0_busy};
+
 endmodule // top
