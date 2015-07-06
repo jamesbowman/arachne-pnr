@@ -4,6 +4,7 @@
 
 : main
     begin
-        [char] ! emit
+        [char] J emit
+        [char] 1 emit
     again
 ;

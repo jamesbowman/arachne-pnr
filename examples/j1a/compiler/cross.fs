@@ -355,7 +355,7 @@ decimal
     s" hex" out-suffix to file
 
     hex
-    8 0 do
+    512 0 do
         tflash i 2* + w@
         s>d <# # # # # #> file write-line throw
     loop

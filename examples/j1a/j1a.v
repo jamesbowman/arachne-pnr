@@ -52,7 +52,7 @@ module top(input clk, output D1, output D2, output D3, output D4, output D5,
   wire [15:0] insn;
 
   always @(posedge clk)
-    case (code_addr[2:0])
+    case (code_addr[3:0])
     // 0: insn <= 16'h8001;
     // 1: insn <= 16'h6203;
     // 2: insn <= 16'h6040;
@@ -98,14 +98,18 @@ module top(input clk, output D1, output D2, output D3, output D4, output D5,
     if (io_wr)
        q <= mem_addr[3:0];
 
-  assign D5 = code_addr[0];
-  assign {D1,D2,D3,D4} = 1;
+  reg  io_wr_;
+  reg [15:0] dout_;
+  always @(posedge clk)
+    {io_wr_, dout_} <= {io_wr, dout};
+
+  assign {D1,D2,D3,D4,D5} = code_addr[4:0];
   assign J3_10 = io_wr;
 
   wire uart0_valid, uart0_busy;
   wire [7:0] uart0_data;
   wire uart0_rd = 0, uart0_wr = io_wr;
-  reg [31:0] uart_baud = 32'd115200;
+  reg [31:0] uart_baud = 32'd9600;
   wire UART0_RX;
   buart #(.CLKFREQ(MHZ * 1000000)) _uart0 (
      .clk(clk),
@@ -114,9 +118,9 @@ module top(input clk, output D1, output D2, output D3, output D4, output D5,
      .rx(RXD),
      .tx(TXD),
      .rd(uart0_rd),
-     .wr(io_wr),
+     .wr(io_wr_),
      .valid(uart0_valid),
      .busy(uart0_busy),
-     .tx_data(dout[7:0]),
+     .tx_data(dout_[7:0]),
      .rx_data(uart0_data));
 endmodule // top

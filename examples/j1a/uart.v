@@ -74,7 +74,7 @@ module uart(
     end else begin
       if (starting) begin
         shifter <= { uart_dat_i[7:0], 1'b0 };
-        bitcount <= 1 + 8 + 1 + 1;
+        bitcount <= 1 + 8 + 1 + 4;
       end
 
       if (sending & ser_clk) begin
